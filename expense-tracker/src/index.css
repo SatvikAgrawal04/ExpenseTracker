@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+.failed-popup {
+  position: fixed;
+  top: 20px;
+  left: 50%; /* Updated from 38% to 50% */
+  background-color: #e9441b;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fadeInOut 2.5s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  90% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
+}
