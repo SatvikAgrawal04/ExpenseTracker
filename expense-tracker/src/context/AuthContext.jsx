@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem("token", data.token);
@@ -44,7 +43,7 @@ export const AuthProvider = ({ children }) => {
         setToken(data.token);
         setUser({ id: data.id, name: data.name, email: data.email });
         console.log(user);
-        navigate("/expenses");
+        // navigate("/expenses");
       }
       return data;
     } catch (error) {

@@ -3,6 +3,7 @@ using ExpenseTrackerAPI.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ExpenseTrackerAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = builder.Configuration.GetSection("Jwt");
@@ -35,7 +36,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // Allow React app URL
+        policy.AllowAnyOrigin() // Allow React app URL
               .AllowAnyHeader()                   // Allow any headers
               .AllowAnyMethod();                   // Allow any HTTP method
     });
@@ -45,6 +46,11 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddSingleton<IOtpService, OtpService>();
+
+builder.Services.Configure<IConfiguration>(builder.Configuration.GetSection("Postmark"));
 
 var app = builder.Build();
 

@@ -1,4 +1,3 @@
-// src/components/expenses/SpendingOverview.jsx
 import React from "react";
 
 const SpendingOverview = ({ monthsData, showStats }) => {
@@ -22,7 +21,7 @@ const SpendingOverview = ({ monthsData, showStats }) => {
               <div className="text-lg font-bold text-blue-400">
                 ₹{amount.toFixed(2)}
               </div>
-              <div className="w-full bg-gray-600 h-1 mt-2 rounded-full overflow-hidden">
+              {/* <div className="w-full bg-gray-600 h-1 mt-2 rounded-full overflow-hidden">
                 <div
                   className="bg-blue-500 h-1 rounded-full transition-all duration-1000"
                   style={{
@@ -32,7 +31,7 @@ const SpendingOverview = ({ monthsData, showStats }) => {
                     animationDelay: `${index * 150 + 500}ms`,
                   }}
                 ></div>
-              </div>
+              </div> */}
             </div>
           </div>
         ))}

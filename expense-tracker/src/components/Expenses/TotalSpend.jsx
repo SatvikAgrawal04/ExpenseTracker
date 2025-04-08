@@ -1,4 +1,3 @@
-// src/components/expenses/TotalSpend.jsx
 import React from "react";
 
 const TotalSpend = ({ total }) => {

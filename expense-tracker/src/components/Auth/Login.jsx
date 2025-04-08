@@ -8,7 +8,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +23,6 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 px-6 py-8 relative overflow-hidden">
-      {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute w-64 h-64 rounded-full bg-indigo-600 opacity-10 -top-10 -right-10 animate-pulse"></div>
         <div
@@ -86,6 +84,16 @@ const Login = () => {
             </div>
           </div>
 
+          {/* Forgot Password Link */}
+          <div className="flex justify-end">
+            <Link
+              to="/forgot-password"
+              className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors duration-300 hover:underline underline-offset-2"
+            >
+              Forgot Password?
+            </Link>
+          </div>
+
           <button
             type="submit"
             disabled={isLoading}
@@ -131,7 +139,6 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Floating animated elements */}
       <div className="absolute top-1/4 left-1/4 w-6 h-6 rounded-full bg-indigo-500 opacity-20 animate-float"></div>
       <div
         className="absolute top-3/4 right-1/4 w-4 h-4 rounded-full bg-purple-500 opacity-20 animate-float"
@@ -142,7 +149,6 @@ const Login = () => {
         style={{ animationDelay: "2s", animationDuration: "8s" }}
       ></div>
 
-      {/* Error Popup */}
       {error && (
         <div className="fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-500 animate-bounce-gentle opacity-90">
           <div className="flex items-center">

@@ -12,18 +12,11 @@ const AddExpense = ({ onClose, onExpenseAdded, existingCategories = [] }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [customCategory, setCustomCategory] = useState("");
-
-  // Animation state
   const [formVisible, setFormVisible] = useState(false);
 
   useEffect(() => {
-    // Trigger entrance animation after component mounts
     setTimeout(() => setFormVisible(true), 50);
-
-    // Add body class to prevent scrolling when modal is open
     document.body.classList.add("overflow-hidden");
-
-    // Cleanup when modal closes
     return () => {
       document.body.classList.remove("overflow-hidden");
     };
@@ -49,11 +42,8 @@ const AddExpense = ({ onClose, onExpenseAdded, existingCategories = [] }) => {
     try {
       const response = await addExpense(expense);
       if (response.data) {
-        // Success animation
         setIsSubmitting(false);
         onExpenseAdded(response.data);
-
-        // Start exit animation
         setFormVisible(false);
         setTimeout(() => onClose(), 300);
       }
@@ -83,7 +73,6 @@ const AddExpense = ({ onClose, onExpenseAdded, existingCategories = [] }) => {
     }
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -102,7 +91,6 @@ const AddExpense = ({ onClose, onExpenseAdded, existingCategories = [] }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 transition-all duration-300">
-      {/* Improved backdrop with gradient and blur */}
       <div
         className={`absolute inset-0 bg-gradient-to-br from-gray-900/70 to-black/70 backdrop-blur-md transition-opacity duration-300 ${
           formVisible ? "opacity-100" : "opacity-0"
@@ -117,7 +105,6 @@ const AddExpense = ({ onClose, onExpenseAdded, existingCategories = [] }) => {
             : "opacity-0 scale-95 translate-y-8"
         }`}
       >
-        {/* Glass effect overlay */}
         <div className="absolute inset-0 bg-blue-500/5 rounded-xl backdrop-blur-sm"></div>
 
         <div className="relative">
