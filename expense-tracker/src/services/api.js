@@ -15,3 +15,8 @@ api.interceptors.request.use((config) => {
 export const getExpenses = () => api.get("/Expenses");
 export const addExpense = (expense) => api.post("/Expenses", expense);
 export const deleteExpense = (id) => api.delete(`/Expenses/${id}`);
+export const getUsers = () => api.get("/Users");
+export const splitExpense = (data) => {
+  console.log(":::::::SENDING MAIL::::::");
+  api.post("/expenses/split", data);
+};

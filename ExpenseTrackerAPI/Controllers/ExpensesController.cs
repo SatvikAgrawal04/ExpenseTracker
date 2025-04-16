@@ -8,19 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using ExpenseTrackerAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using ExpenseTrackerAPI.Services;
 
 
 namespace ExpenseTrackerAPI.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ExpensesController : ControllerBase
     {
         private readonly ExpenseTrackerContext _context;
-        public ExpensesController(ExpenseTrackerContext context)
+        private readonly IEmailService _emailService;
+        public ExpensesController(ExpenseTrackerContext context, IEmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -92,5 +95,81 @@ namespace ExpenseTrackerAPI.Controllers
             return NoContent();
         }
 
+        [HttpPost("split")]
+        public async Task<IActionResult> SplitExpense([FromBody] ExpenseSplitRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            // if (userIdClaim == null)
+            // {
+            //     return Unauthorized();
+            // }
+
+            bool allEmailSent = true;
+            foreach (var splitUser in request.SplitWith)
+            {
+                string formattedDate = request.Date.ToString("MMMM dd, yyyy");
+                bool emailSent = await _emailService.SendSplitMail(
+                    email: splitUser.Email,
+                    amount: splitUser.Amount.ToString("0.00"),
+                    name: splitUser.Name,
+                    date: formattedDate,
+                    description: request.Description,
+                    createdBy: request.CreatedBy
+                );
+                if (!emailSent)
+                {
+                    allEmailSent = false;
+                }
+            }
+
+            return Ok(new
+            {
+                Success = true,
+                Message = allEmailSent ? "All split notifications sent successfully" : "Some split notifications failed to send"
+            });
+        }
+
     }
+
+
+    public class ExpenseSplitRequest
+    {
+        public string CreatedBy { get; set; }
+        public DateTime Date { get; set; }
+        public string Description { get; set; }
+        public List<SplitUser> SplitWith { get; set; }
+    }
+
+    public class SplitUser
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public decimal Amount { get; set; }
+    }
+
 }
+
+/*
+{
+  "createdBy": "Satvik",
+  "date": "2025-04-15T06:42:38.009Z",
+  "description": "lunch",
+  "splitWith": [
+    {
+      "name": "satvik",
+      "email": "satwikagrawal@gmail.com",
+      "amount": 10
+    },
+{
+"name":"shankho",
+"email":"shankhosuvro@outlook.com",
+"amount":190
+}
+  ]
+}
+*/

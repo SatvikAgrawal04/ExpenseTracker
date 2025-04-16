@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ExpenseTrackerAPI.Data;
 using ExpenseTrackerAPI.Models;
 using ExpenseTrackerAPI.Services;
@@ -30,6 +26,9 @@ namespace ExpenseTrackerAPI.Controllers
         [HttpPost("forgot")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO model)
         {
+
+            var api = Environment.GetEnvironmentVariable("POSTMARK_TOKEN");
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -38,6 +37,7 @@ namespace ExpenseTrackerAPI.Controllers
             if (user == null)
             {
                 return Ok(new { message = "If the email is registered, you will receive an OTP." });
+
             }
             string otp = _otpService.GenerateOtp();
 
@@ -46,7 +46,7 @@ namespace ExpenseTrackerAPI.Controllers
             bool emailSent = await _emailService.SendOtpEmailAsync(model.Email, otp);
             if (!emailSent)
             {
-                return StatusCode(500, new { error = "Failed to send OTP email" });
+                return StatusCode(500, new { error = "Failed to send OTP email", });
             }
             return Ok(new { message = "If the email is registered, you will receive an OTP." });
         }

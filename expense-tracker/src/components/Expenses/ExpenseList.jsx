@@ -7,6 +7,7 @@ import SpendingOverview from "./SpendingOverview";
 import CategoryGroup from "./CategoryGroup";
 import TotalSpend from "./TotalSpend";
 import ExpenseHeader from "./ExpenseHeader";
+import AddGroupExpense from "./AddGroupExpense";
 import "./ExpenseList.css";
 import {
   PieChart,
@@ -30,6 +31,8 @@ const ExpenseList = () => {
   const [sortBy, setSortBy] = useState("date");
   const [sortOrder, setSortOrder] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
+  const [showAddGroupExpense, setShowAddGroupExpense] = useState(false);
+
   const COLORS = [
     "#1E40AF",
     "#3B82F6",
@@ -165,7 +168,11 @@ const ExpenseList = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-200 flex flex-col items-center p-4 md:p-6">
       <div className="w-full max-w-4xl">
-        <ExpenseHeader setShowAddExpense={setShowAddExpense} logout={logout} />
+        <ExpenseHeader
+          setShowAddExpense={setShowAddExpense}
+          setShowAddGroupExpense={setShowAddGroupExpense}
+          logout={logout}
+        />
         <div className="flex justify-end mb-6">
           <button
             onClick={() => setShowPieChart(true)}
@@ -265,6 +272,13 @@ const ExpenseList = () => {
       {showAddExpense && (
         <AddExpense
           onClose={() => setShowAddExpense(false)}
+          onExpenseAdded={handleExpenseAdded}
+          existingCategories={categories}
+        />
+      )}
+      {showAddGroupExpense && (
+        <AddGroupExpense
+          onClose={() => setShowAddGroupExpense(false)}
           onExpenseAdded={handleExpenseAdded}
           existingCategories={categories}
         />

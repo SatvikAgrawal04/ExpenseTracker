@@ -1,4 +1,3 @@
-// src/components/expenses/ExpenseItem.jsx
 import React from "react";
 
 const ExpenseItem = ({
@@ -10,21 +9,55 @@ const ExpenseItem = ({
   onRequestDelete,
   onCancelDelete,
 }) => {
+  // Check if this is a group expense
+  const isGroupExpense = expense.description.includes("(Group expense)");
+
+  // Remove the "(Group expense)" text from the displayed description
+  const displayDescription = isGroupExpense
+    ? expense.description.replace(" (Group expense)", "")
+    : expense.description;
+
   return (
     <li
       id={`expense-${expense.id}`}
       className={`flex justify-between items-center p-3 ${
         isAnimating
           ? "bg-red-900/20 scale-95 opacity-50"
+          : isGroupExpense
+          ? "bg-indigo-900 bg-opacity-30" // Different background for group expenses
           : "bg-gray-700 bg-opacity-50"
-      } rounded-lg hover:bg-gray-600 transition-all duration-300 group animate-fade-in`}
+      } rounded-lg hover:bg-gray-600 transition-all duration-300 group animate-fade-in ${
+        isGroupExpense ? "border-l-4 border-indigo-500" : "" // Add left border for group expenses
+      }`}
       style={{
         animationDelay: `${expenseIndex * 50 + 300}ms`,
       }}
     >
       <div>
-        <p className="font-medium text-gray-200 group-hover:text-white transition-colors duration-300">
-          {expense.description}
+        <p
+          className={`font-medium ${
+            isGroupExpense
+              ? "text-indigo-200 flex items-center"
+              : "text-gray-200"
+          } group-hover:text-white transition-colors duration-300`}
+        >
+          {isGroupExpense && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-1 text-indigo-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+          )}
+          {displayDescription}
         </p>
         <p className="text-sm text-gray-400 flex items-center">
           <svg
@@ -45,7 +78,13 @@ const ExpenseItem = ({
         </p>
       </div>
       <div className="flex items-center space-x-4">
-        <p className="font-semibold text-gray-200 group-hover:text-blue-300 transition-colors duration-300">
+        <p
+          className={`font-semibold ${
+            isGroupExpense
+              ? "text-indigo-300 group-hover:text-indigo-200"
+              : "text-gray-200 group-hover:text-blue-300"
+          } transition-colors duration-300`}
+        >
           ₹{expense.amount.toFixed(2)}
         </p>
         {deleteConfirm ? (

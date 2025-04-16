@@ -3,21 +3,42 @@ import { useAuth } from "../../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSSOLoading, setIsSSOLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     const response = await login(email, password);
-    console.log(response);
     setIsLoading(false);
-    if (response.error) {
+    if (response && response.error) {
       setError(response.error);
       setTimeout(() => setError(""), 2500);
+    }
+  };
+
+  const handleFirebaseSSO = async () => {
+    setIsSSOLoading(true);
+    try {
+      // Call the loginWithGoogle method from your AuthContext
+      const result = await loginWithGoogle({
+        redirectPath: "/expenses", // Define where to redirect after successful auth
+      });
+
+      if (result.error) {
+        setError(result.error);
+        setTimeout(() => setError(""), 2500);
+      }
+    } catch (error) {
+      console.error("Firebase SSO error:", error);
+      setError("Could not sign in with Google. Please try again.");
+      setTimeout(() => setError(""), 2500);
+    } finally {
+      setIsSSOLoading(false);
     }
   };
 
@@ -129,6 +150,62 @@ const Login = () => {
           </button>
         </form>
 
+        {/* SSO Login Divider */}
+        <div className="mt-6 relative flex items-center">
+          <div className="flex-grow border-t border-gray-600"></div>
+          <span className="flex-shrink mx-4 text-gray-400 text-sm">Or</span>
+          <div className="flex-grow border-t border-gray-600"></div>
+        </div>
+
+        {/* Firebase SSO Login Button */}
+        <button
+          onClick={handleFirebaseSSO}
+          disabled={isSSOLoading || isLoading}
+          className="w-full py-3 px-4 mt-6 text-sm font-medium flex items-center justify-center text-white bg-gray-700 hover:bg-gray-600 border border-gray-600 rounded-lg transform hover:-translate-y-1 transition-all duration-300 shadow-lg hover:shadow-purple-500/10 focus:ring-2 focus:ring-purple-500 focus:outline-none disabled:opacity-70 disabled:transform-none disabled:hover:translate-y-0"
+        >
+          {isSSOLoading ? (
+            <span className="flex items-center justify-center">
+              <svg
+                className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Redirecting...
+            </span>
+          ) : (
+            <>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Continue with Google
+            </>
+          )}
+        </button>
+
         <div className="text-center mt-8">
           <Link
             to="/register"
@@ -164,7 +241,7 @@ const Login = () => {
                 clipRule="evenodd"
               />
             </svg>
-            Invalid Credentials
+            {error}
           </div>
         </div>
       )}
